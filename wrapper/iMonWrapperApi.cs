@@ -217,11 +217,6 @@ namespace iMon.DisplayApi
 
         private void onError(iMonErrorType error)
         {
-            switch (error)
-            {
-                
-            }
-
             if (this.Error != null)
             {
                 this.Error(this, new iMonErrorEventArgs(error));

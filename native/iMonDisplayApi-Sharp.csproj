@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>iMon.DisplayApi</RootNamespace>
-    <AssemblyName>iMonDisplayApi</AssemblyName>
+    <AssemblyName>iMonDisplayApiSharp</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

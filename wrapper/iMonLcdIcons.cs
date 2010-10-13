@@ -23,7 +23,7 @@ namespace iMon.DisplayApi
     /// <summary>
     /// List of all available icons on the LCD
     /// </summary>
-    public enum iMonIcons
+    public enum iMonLcdIcons
     {
         /// <summary>
         /// A sound box on the left front is in use.

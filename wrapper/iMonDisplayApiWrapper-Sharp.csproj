@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>iMon.DisplayApi</RootNamespace>
-    <AssemblyName>iMonDisplayApiWrapper</AssemblyName>
+    <AssemblyName>iMonDisplayApiWrapperSharp</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -41,7 +41,7 @@
     <Compile Include="iMonDisplayType.cs" />
     <Compile Include="iMonErrorType.cs" />
     <Compile Include="iMonErrorEventArgs.cs" />
-    <Compile Include="iMonIcons.cs" />
+    <Compile Include="iMonLcdIcons.cs" />
     <Compile Include="iMonLcdIconsControl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="iMonVfd.cs" />
