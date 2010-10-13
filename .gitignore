@@ -1,0 +1,8 @@
+
+/_ReSharper.iMonDisplayApi-Sharp
+*.suo
+*.user
+/native/bin
+/native/obj
+/wrapper/bin
+/wrapper/obj
