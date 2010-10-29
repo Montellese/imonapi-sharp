@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using System;
 
 namespace iMon.DisplayApi
 {
@@ -13,7 +14,7 @@ namespace iMon.DisplayApi
         /// <returns>This function will return one of DisplayResult enumeration value.
         /// DisplayResult.Succeeded will be returned if succeeded. DisplayResult.InvalidArguments or DisplayResult.OutOfMemory can be returned when error occurs.</returns>
         [DllImport("iMONDisplay.dll", EntryPoint = "IMON_Display_Init")]
-        public static extern iMonDisplayResult IMON_Display_Init(int hwndNoti, uint uMsgNotification);
+        public static extern iMonDisplayResult IMON_Display_Init(IntPtr hwndNoti, uint uMsgNotification);
 
         /// <summary>
         /// This function should be called when the caller application need not use this API any more.

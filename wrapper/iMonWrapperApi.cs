@@ -91,7 +91,7 @@ namespace iMon.DisplayApi
                 return;
             }
 
-            iMonNativeApi.iMonDisplayResult result = iMonNativeApi.IMON_Display_Init(this.Handle.ToInt32(), WM_IMON_NOTIFICATION);
+            iMonNativeApi.iMonDisplayResult result = iMonNativeApi.IMON_Display_Init(this.Handle, WM_IMON_NOTIFICATION);
             if (result != iMonNativeApi.iMonDisplayResult.Succeeded)
             {
                 this.onError(getErrorType(result));
