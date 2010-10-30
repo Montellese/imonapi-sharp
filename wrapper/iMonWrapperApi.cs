@@ -24,18 +24,29 @@ namespace iMon.DisplayApi
         public event EventHandler<iMonStateChangedEventArgs> StateChanged;
         public event EventHandler<iMonErrorEventArgs> Error;
 
+        public event EventHandler<iMonLogErrorEventArgs> LogError;
+        public event EventHandler<iMonLogEventArgs> Log;
+
         #endregion
 
         #region Public variables
 
         public bool IsInitialized
         {
-            get { return (iMonNativeApi.IMON_Display_IsInited() == iMonNativeApi.iMonDisplayResult.Initialized); }
+            get 
+            {
+                this.OnLog("IMON_Display_IsInited()");
+                return (iMonNativeApi.IMON_Display_IsInited() == iMonNativeApi.iMonDisplayResult.Initialized); 
+            }
         }
 
         public bool IsPluginModeEnabled
         {
-            get { return (iMonNativeApi.IMON_Display_IsPluginModeEnabled() == iMonNativeApi.iMonDisplayResult.InPluginMode); }
+            get 
+            {
+                this.OnLog("IMON_Display_IsPluginModeEnabled()");
+                return (iMonNativeApi.IMON_Display_IsPluginModeEnabled() == iMonNativeApi.iMonDisplayResult.InPluginMode); 
+            }
         }
 
         public iMonDisplayType DisplayType
@@ -49,7 +60,8 @@ namespace iMon.DisplayApi
             {
                 if ((this.displayType & iMonDisplayType.VFD) != iMonDisplayType.VFD)
                 {
-                    // throw an InvalidDisplayHardwareException
+                    this.OnLogError("VFD is not available");
+                    return null;
                 }
 
                 return this.vfd;
@@ -62,7 +74,8 @@ namespace iMon.DisplayApi
             {
                 if ((this.displayType & iMonDisplayType.LCD) != iMonDisplayType.LCD)
                 {
-                    // throw an InvalidDisplayHardwareException
+                    this.OnLogError("LCD is not available");
+                    return null;
                 }
 
                 return this.lcd;
@@ -91,10 +104,11 @@ namespace iMon.DisplayApi
                 return;
             }
 
+            this.OnLog("IMON_Display_Init(" + this.Handle + ", " + WM_IMON_NOTIFICATION + ")");
             iMonNativeApi.iMonDisplayResult result = iMonNativeApi.IMON_Display_Init(this.Handle, WM_IMON_NOTIFICATION);
             if (result != iMonNativeApi.iMonDisplayResult.Succeeded)
             {
-                this.onError(getErrorType(result));
+                this.onError(this.getErrorType(result));
             }
         }
 
@@ -114,6 +128,7 @@ namespace iMon.DisplayApi
                 this.lcd.Reset();
             }
 
+            this.OnLog("IMON_Display_Uninit()");
             iMonNativeApi.IMON_Display_Uninit();
             this.onStateChanged(false);
         }
@@ -152,10 +167,41 @@ namespace iMon.DisplayApi
 
         #endregion
 
+        #region Internal functions
+
+        internal void OnLog(string message)
+        {
+            if (this.Log == null || string.IsNullOrEmpty(message))
+            {
+                return;
+            }
+
+            this.Log(this, new iMonLogEventArgs(message));
+        }
+
+        internal void OnLogError(string message)
+        {
+            this.OnLogError(message, null);
+        }
+
+        internal void OnLogError(string message, Exception exception)
+        {
+            if (this.LogError == null || string.IsNullOrEmpty(message))
+            {
+                return;
+            }
+
+            this.LogError(this, new iMonLogErrorEventArgs(message, exception));
+        }
+
+        #endregion
+
         #region Private functions
 
         private void onMessage(iMonNativeApi.iMonDisplayNotifyCode code, IntPtr data)
         {
+            this.OnLog("Message received: " + code + "(" + data + ")");
+            
             switch (code)
             {
                 case iMonNativeApi.iMonDisplayNotifyCode.PluginSuccess:
@@ -166,12 +212,12 @@ namespace iMon.DisplayApi
                     break;
 
                 case iMonNativeApi.iMonDisplayNotifyCode.PluginFailed:
-                    this.onError(getErrorType((iMonNativeApi.iMonDisplayInitResult)data));
+                    this.onError(this.getErrorType((iMonNativeApi.iMonDisplayInitResult)data));
                     break;
 
                 case iMonNativeApi.iMonDisplayNotifyCode.HardwareDisconnected:
                 case iMonNativeApi.iMonDisplayNotifyCode.iMonClosed:
-                    this.onError(getErrorType(code));
+                    this.onError(this.getErrorType(code));
                     break;
 
                 case iMonNativeApi.iMonDisplayNotifyCode.LCDTextScrollDone:
@@ -187,6 +233,8 @@ namespace iMon.DisplayApi
                 return;
             }
 
+            this.OnLog("State changed");
+
             this.initialized = isInitialized;
 
             if (this.StateChanged != null)
@@ -197,6 +245,8 @@ namespace iMon.DisplayApi
 
         private void onError(iMonErrorType error)
         {
+            this.OnLogError("Error received: " + error);
+
             if (this.Error != null)
             {
                 this.Error(this, new iMonErrorEventArgs(error));
@@ -205,8 +255,10 @@ namespace iMon.DisplayApi
             this.onStateChanged(false);
         }
 
-        private static iMonErrorType getErrorType(iMonNativeApi.iMonDisplayResult result)
+        private iMonErrorType getErrorType(iMonNativeApi.iMonDisplayResult result)
         {
+            this.OnLogError("Interpreting result error type: " + result);
+
             switch (result)
             {
                 case iMonNativeApi.iMonDisplayResult.ApiNotInitialized:
@@ -234,8 +286,10 @@ namespace iMon.DisplayApi
             return iMonErrorType.Unknown;
         }
 
-        private static iMonErrorType getErrorType(iMonNativeApi.iMonDisplayNotifyCode notifyCode)
+        private iMonErrorType getErrorType(iMonNativeApi.iMonDisplayNotifyCode notifyCode)
         {
+            this.OnLogError("Interpreting notify error type: " + notifyCode);
+
             switch (notifyCode)
             {
                 case iMonNativeApi.iMonDisplayNotifyCode.PluginFailed:
@@ -251,8 +305,10 @@ namespace iMon.DisplayApi
             return iMonErrorType.Unknown;
         }
 
-        private static iMonErrorType getErrorType(iMonNativeApi.iMonDisplayInitResult code)
+        private iMonErrorType getErrorType(iMonNativeApi.iMonDisplayInitResult code)
         {
+            this.OnLogError("Interpreting init result error type: " + code);
+
             switch (code)
             {
                 case iMonNativeApi.iMonDisplayInitResult.HardwareNotConnected:

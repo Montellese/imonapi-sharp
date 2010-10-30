@@ -42,9 +42,11 @@ namespace iMon.DisplayApi
             }
             if (!this.wrapper.IsInitialized)
             {
+                this.wrapper.OnLogError("VFD.SetText(): Not initialized");
                 throw new InvalidOperationException("The display is not initialized");
             }
 
+            this.wrapper.OnLog("IMON_Display_SetVfdText(" + firstLine + ", " + secondLine + ")");
             iMonNativeApi.iMonDisplayResult result = iMonNativeApi.IMON_Display_SetVfdText(firstLine, secondLine);
 
             switch (result)
@@ -53,9 +55,11 @@ namespace iMon.DisplayApi
                     return true;
                 
                 case iMonNativeApi.iMonDisplayResult.InvalidPointer:
+                    this.wrapper.OnLogError("IMON_Display_SetVfdText() => Invalid pointer");
                     throw new NullReferenceException();
 
                 case iMonNativeApi.iMonDisplayResult.NotInitialized:
+                    this.wrapper.OnLogError("IMON_Display_SetVfdText() => Not initialized");
                     throw new InvalidOperationException("The display is not initialized");
             }
 
@@ -74,12 +78,14 @@ namespace iMon.DisplayApi
             }
             if (!this.wrapper.IsInitialized)
             {
+                this.wrapper.OnLogError("VFD.SetEqualizer(): Not initialized");
                 throw new InvalidOperationException("The display is not initialized");
             }
 
             iMonNativeApi.iMonDisplayEqualizerData eqData = new iMonNativeApi.iMonDisplayEqualizerData();
             eqData.BandData = bandData;
 
+            this.wrapper.OnLog("IMON_Display_SetVfdEqData()");
             iMonNativeApi.iMonDisplayResult result = iMonNativeApi.IMON_Display_SetVfdEqData(ref eqData);
 
             switch (result)
@@ -88,9 +94,11 @@ namespace iMon.DisplayApi
                     return true;
 
                 case iMonNativeApi.iMonDisplayResult.InvalidPointer:
+                    this.wrapper.OnLogError("IMON_Display_SetVfdEqData() => Invalid pointer");
                     throw new NullReferenceException();
 
                 case iMonNativeApi.iMonDisplayResult.NotInitialized:
+                    this.wrapper.OnLogError("IMON_Display_SetVfdEqData() => Not initialized");
                     throw new InvalidOperationException("The display is not initialized");
             }
 
@@ -103,6 +111,7 @@ namespace iMon.DisplayApi
 
         internal void Reset()
         {
+            this.wrapper.OnLog("VFD.Reset()");
             if (this.wrapper.IsInitialized)
             {
                 this.SetText(string.Empty, string.Empty);

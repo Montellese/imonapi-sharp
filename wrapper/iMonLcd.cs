@@ -52,9 +52,11 @@ namespace iMon.DisplayApi
             }
             if (!this.wrapper.IsInitialized)
             {
+                this.wrapper.OnLogError("LCD.SetText(): Not initialized");
                 throw new InvalidOperationException("The display is not initialized");
             }
 
+            this.wrapper.OnLog("IMON_Display_SetLcdText(" + text + ")");
             iMonNativeApi.iMonDisplayResult result = iMonNativeApi.IMON_Display_SetLcdText(text);
 
             switch (result)
@@ -63,9 +65,11 @@ namespace iMon.DisplayApi
                     return true;
 
                 case iMonNativeApi.iMonDisplayResult.InvalidPointer:
+                    this.wrapper.OnLogError("IMON_Display_SetLcdText() => Invalid pointer");
                     throw new NullReferenceException();
 
                 case iMonNativeApi.iMonDisplayResult.NotInitialized:
+                    this.wrapper.OnLogError("IMON_Display_SetLcdText() => Not initialized");
                     throw new InvalidOperationException("The display is not initialized");
             }
 
@@ -92,6 +96,7 @@ namespace iMon.DisplayApi
             }
             if (!this.wrapper.IsInitialized)
             {
+                this.wrapper.OnLogError("LCD.SetEqualizer(): Not initialized");
                 throw new InvalidOperationException("The display is not initialized");
             }
 
@@ -100,6 +105,7 @@ namespace iMon.DisplayApi
             iMonNativeApi.iMonDisplayEqualizerData eqRightData = new iMonNativeApi.iMonDisplayEqualizerData();
             eqRightData.BandData = rightChannelBandData;
 
+            this.wrapper.OnLog("IMON_Display_SetLcdEqData()");
             iMonNativeApi.iMonDisplayResult result = iMonNativeApi.IMON_Display_SetLcdEqData(ref eqLeftData, ref eqRightData);
 
             switch (result)
@@ -108,9 +114,11 @@ namespace iMon.DisplayApi
                     return true;
 
                 case iMonNativeApi.iMonDisplayResult.InvalidPointer:
+                    this.wrapper.OnLogError("IMON_Display_SetLcdEqData() => Invalid pointer");
                     throw new NullReferenceException();
 
                 case iMonNativeApi.iMonDisplayResult.NotInitialized:
+                    this.wrapper.OnLogError("IMON_Display_SetLcdEqData() => Not initialized");
                     throw new InvalidOperationException("The display is not initialized");
             }
 
@@ -133,9 +141,11 @@ namespace iMon.DisplayApi
             }
             if (!this.wrapper.IsInitialized)
             {
+                this.wrapper.OnLogError("LCD.SetProgress(): Not initialized");
                 throw new InvalidOperationException("The display is not initialized");
-            } 
-            
+            }
+
+            this.wrapper.OnLog("IMON_Display_SetLcdProgress(" + value + ", " + total + ")");
             iMonNativeApi.iMonDisplayResult result = iMonNativeApi.IMON_Display_SetLcdProgress(value, total);
 
             switch (result)
@@ -144,6 +154,7 @@ namespace iMon.DisplayApi
                     return true;
 
                 case iMonNativeApi.iMonDisplayResult.NotInitialized:
+                    this.wrapper.OnLogError("IMON_Display_SetLcdProgress() => Not initialized");
                     throw new InvalidOperationException("The display is not initialized");
             }
 
@@ -156,6 +167,7 @@ namespace iMon.DisplayApi
 
         internal void Reset()
         {
+            this.wrapper.OnLog("LCD.Reset()");
             if (this.wrapper.IsInitialized)
             {
                 this.SetText(string.Empty);
