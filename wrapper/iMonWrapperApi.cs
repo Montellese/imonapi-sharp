@@ -35,8 +35,7 @@ namespace iMon.DisplayApi
         {
             get 
             {
-                this.OnLog("IMON_Display_IsInited()");
-                return (iMonNativeApi.IMON_Display_IsInited() == iMonNativeApi.iMonDisplayResult.Initialized); 
+                return this.initialized; 
             }
         }
 
